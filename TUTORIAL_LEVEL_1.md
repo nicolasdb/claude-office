@@ -4,8 +4,8 @@
 
 > A safe, throwaway walkthrough of the value loop. No real projects touched. Goal: **see the loop produce artifacts with your own eyes** so the mental model becomes real before you point this at work that matters.
 
-**Time:** ~20 minutes
-**Risk:** zero — everything happens in a sandbox folder you delete at the end
+**Time:** ~20 minutes  
+**Risk:** zero — everything happens in a sandbox folder you delete at the end  
 **Prerequisite:** Claude Code installed, and you've read [The Mental Model](README.md#the-mental-model)
 
 ---

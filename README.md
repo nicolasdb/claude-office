@@ -120,6 +120,6 @@ Gets you up to speed on all active projects. Run this at the start of any sessio
 
 ---
 
-→ [Command reference](COMMANDS.md) — full list of commands, hooks, and local state
-→ [Architecture & design decisions](ARCHITECTURE.md) — how it works under the hood
+→ [Command reference](COMMANDS.md) — full list of commands, hooks, and local state  
+→ [Architecture & design decisions](ARCHITECTURE.md) — how it works under the hood  
 → [Integrations](INTEGRATIONS.md) — pairing with structural or fact-memory tools (graphify, supermemory, and a rubric for others)
