@@ -39,8 +39,6 @@ Hooks parse JSON and conversation transcripts with `node`, never python. Claude 
 **Scripts stay POSIX-portable.**  
 Hooks run on Linux, macOS (BSD coreutils, bash 3.2), and Git Bash on Windows. They avoid GNU-only flags (`sed -i`, `grep -P`, `readlink -f`, `date -d`) and are pinned to LF line endings via `.gitattributes` — CRLF would break them under Git Bash (`$'\r': command not found`). The `run-hook.cmd` polyglot wrapper lets the same entry point work from cmd.exe and from a Unix shell.
 
-**Metadata injection only.**  
-Hooks never inject raw file content into the Claude context window — only counts and summaries. This prevents prompt injection attacks from vault content.
 
 **Incremental aggregation.**  
 `/aggregate` uses git-diff change detection and only rebuilds project status files that have new activity since the last run. It tracks state in `~/.claude-office/aggregation-state.json`.
