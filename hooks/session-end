@@ -68,6 +68,16 @@ if [ -z "$transcript_path" ] && [ -n "$session_id" ]; then
   transcript_path=$(find "$HOME/.claude/projects" -name "${session_id}.jsonl" 2>/dev/null | head -1 || true)
 fi
 
+# Write state NOW (before node runs) so a second concurrent Stop fire sees
+# the updated state and skips. The transcript line count is the dedup key.
+if [ -n "$transcript_path" ] && [ -f "$transcript_path" ] && [ -n "$session_id" ]; then
+  cur_line_count=$(wc -l < "$transcript_path" 2>/dev/null || echo "0")
+  if [ "$prev_session" = "$session_id" ] && [ "$prev_msg_count" -ge "$cur_line_count" ]; then
+    exit 0
+  fi
+  printf '{"session_id":"%s","msg_count":%s}' "$session_id" "$cur_line_count" > "$STATE_FILE"
+fi
+
 # Extract session overview from transcript
 overview=""
 if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
@@ -147,10 +157,6 @@ if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
       process.exit(0);
     }
 
-    // Save state for next invocation
-    const state=JSON.stringify({session_id:curSession,msg_count:lines.length});
-    fs.writeFileSync(process.argv[5],state);
-
     // Calculate duration
     let duration='';
     if(firstTs && lastTs){
@@ -189,7 +195,7 @@ if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
     if(toolSummary) console.log('TOOLS::'+toolSummary);
     if(tokensOut>0) console.log('TOKENS::'+tokensIn+'in/'+tokensOut+'out');
     if(sessionFileStr) console.log('SESSION_FILES::'+sessionFileStr);
-  " "$transcript_path" "$prev_session" "$prev_msg_count" "$session_id" "$STATE_FILE" 2>/dev/null || echo "")
+  " "$transcript_path" "$prev_session" "$prev_msg_count" "$session_id" 2>/dev/null || echo "")
 fi
 
 # Check if we should skip (no new messages)
