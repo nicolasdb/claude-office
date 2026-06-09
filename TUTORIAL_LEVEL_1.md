@@ -2,7 +2,7 @@
 
 ← [Back to README](README.md)
 
-> A safe, throwaway walkthrough of the value loop. No real projects touched. Goal: **see the loop produce artifacts with your own eyes** so the mental model becomes real before you point this at work that matters.
+> A safe, throwaway walkthrough of the value loop. No real projects touched. Goal: **see the loop produce artifacts with your own eyes** so the mental model becomes real before you point this at work that matters. We recommend running this with a small model, like haiku or sonnet on medium effort.
 
 **Time:** ~20 minutes  
 **Risk:** zero — everything happens in a sandbox folder you delete at the end  
