@@ -13,6 +13,8 @@ That means the fastest way to support other agents is **not** to rewrite the sys
 
 If you want to help push this further, **you are very welcome to adapt this repo for more agents, better packaging, or cleaner installers.**
 
+This is just theory and research. If you experiment with it, you will see if it works and what is the best way to port it. And when you do, please open a PR about it to improve this document.
+
 ---
 
 ## Short answer
