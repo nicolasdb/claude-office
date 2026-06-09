@@ -59,7 +59,6 @@ Each stage reads only from the previous stage's output. Nothing loops back or mu
 
 Running `/init` clones from [ingram-technologies/claude-office-vault](https://github.com/ingram-technologies/claude-office-vault), which provides the base folder structure and Obsidian config. You can fork it to customize the structure for your team.
 
-The vault is designed to be kept on `master` as a bare template — work on a branch for team customizations so you can pull upstream updates cleanly.
 
 ---
 
