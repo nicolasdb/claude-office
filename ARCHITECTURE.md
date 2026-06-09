@@ -43,8 +43,6 @@ Hooks run on Linux, macOS (BSD coreutils, bash 3.2), and Git Bash on Windows. Th
 **Incremental aggregation.**  
 `/aggregate` uses git-diff change detection and only rebuilds project status files that have new activity since the last run. It tracks state in `~/.claude-office/aggregation-state.json`.
 
-**Session-end is scoped to the user.**  
-`session-end` only ever writes to `team/<you>/`. It cannot touch other team members' folders, even if their names appear in the conversation.
 
 **`tasks.md` is personal.**  
 Your todo list lives in your own section of the vault. It is not a team-managed task system. Team coordination happens through GitHub Issues, not through the vault. Higher level instructions can sit in the vault, if they do not sit in the github repo itself. What matters is that they get updated.
