@@ -54,6 +54,11 @@ if [ -n "$hook_input" ]; then
   " 2>/dev/null || echo 'transcript_path=""; session_id=""')"
 fi
 
+# Fallback: if transcript_path is missing (e.g. VS Code extension), find it by session_id
+if [ -z "$transcript_path" ] && [ -n "$session_id" ]; then
+  transcript_path=$(find "$HOME/.claude/projects" -name "${session_id}.jsonl" 2>/dev/null | head -1 || true)
+fi
+
 # Load previous state to avoid duplicate writes
 prev_session=""
 prev_msg_count=0
@@ -63,13 +68,7 @@ if [ -f "$STATE_FILE" ]; then
   [ -z "$prev_msg_count" ] && prev_msg_count=0
 fi
 
-# Fallback: if transcript_path is missing (e.g. VS Code extension), find it by session_id
-if [ -z "$transcript_path" ] && [ -n "$session_id" ]; then
-  transcript_path=$(find "$HOME/.claude/projects" -name "${session_id}.jsonl" 2>/dev/null | head -1 || true)
-fi
-
-# Write state NOW (before node runs) so a second concurrent Stop fire sees
-# the updated state and skips. The transcript line count is the dedup key.
+# Check and write state atomically inside the lock
 if [ -n "$transcript_path" ] && [ -f "$transcript_path" ] && [ -n "$session_id" ]; then
   cur_line_count=$(wc -l < "$transcript_path" 2>/dev/null || echo "0")
   if [ "$prev_session" = "$session_id" ] && [ "$prev_msg_count" -ge "$cur_line_count" ]; then
@@ -295,5 +294,21 @@ short_id=""
   [ -n "$file_list" ] && echo "- Files: $file_list"
   [ -n "$projects" ] && echo "- Projects: $projects"
 } >> "$activity_file"
+
+# Self-healing dedup: remove consecutive duplicate entries (same header line).
+# Handles the race where two concurrent Stop fires both wrote the same block.
+node -e "
+  const fs=require('fs');
+  const f=process.argv[1];
+  const raw=fs.readFileSync(f,'utf8');
+  // Split into blocks on lines starting with '## '
+  const blocks=raw.split(/(?=\n## )/);
+  const deduped=[];
+  for(const b of blocks){
+    const prev=deduped[deduped.length-1]||'';
+    if(b.trim()==='' || b!==prev) deduped.push(b);
+  }
+  if(deduped.length!==blocks.length) fs.writeFileSync(f,deduped.join(''));
+" "$activity_file" 2>/dev/null || true
 
 exit 0
